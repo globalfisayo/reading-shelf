@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Shelf &mdash; what actually got read</title>
-<meta name="description" content="A reading shelf built from Readwise, where saving something doesn't count as reading it.">
+<title>Fisayo, Readers are Leaders</title>
+<meta name="description" content="Fisayo's personal library (at least a part of it).">
 <script>/* set the theme before first paint so there is no flash */
 (function(){try{var t=localStorage.getItem('shelf-theme');if(t==='dark'||t==='light')
 document.documentElement.setAttribute('data-theme',t)}catch(e){}})();</script>
@@ -159,20 +159,40 @@ input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:4
 .hov .ha{font-size:11.5px;color:var(--muted);margin-bottom:9px}
 .hov .hrow{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--paper-dim);padding:3px 0}
 .hov .hrow b{color:var(--paper);font-weight:600}
-/* ---- drawer ---- */
-.drawer{position:fixed;top:0;right:0;height:100%;width:min(430px,92vw);background:var(--surface);border-left:1px solid var(--line);
- transform:translateX(102%);transition:transform .28s cubic-bezier(.3,.8,.3,1);z-index:90;padding:30px 28px;
- overflow-y:auto;box-shadow:-30px 0 60px -30px var(--sh-deep)}
-.drawer.open{transform:none}
-.drawer .k{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:20px 0 5px}
-.drawer h3{font-family:ui-serif,Georgia,serif;font-weight:600;font-size:22px;line-height:1.28;margin:12px 0 6px}
-.drawer .da{color:var(--paper-dim);font-size:13.5px;margin-bottom:18px}
-.drawer p{font-size:13.5px;line-height:1.65;color:var(--paper-dim);margin:0}
-.drawer .dcov{width:104px;aspect-ratio:2/3;border-radius:8px;object-fit:cover;float:right;margin:0 0 14px 16px;
- box-shadow:0 12px 26px -12px var(--sh-deep)}
-.drawer a.go{display:inline-block;margin-top:22px;color:#fff;background:var(--accent);text-decoration:none;
- padding:9px 16px;border-radius:999px;font-size:12.5px;font-weight:650}
-.close{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer}
+/* ---- the modal: centred, roomy, soft-cornered ---- */
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-46%) scale(.97);
+ width:min(880px,94vw);max-height:88vh;overflow-y:auto;background:var(--surface);
+ border:1px solid var(--line);border-radius:26px;z-index:90;padding:38px 42px 34px;
+ opacity:0;visibility:hidden;box-shadow:0 50px 100px -34px var(--sh-deep),0 8px 24px -12px var(--sh);
+ transition:opacity .24s cubic-bezier(.2,.7,.3,1),transform .24s cubic-bezier(.2,.7,.3,1),visibility .24s}
+.modal.open{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+.mgrid{display:grid;grid-template-columns:212px 1fr;gap:34px;align-items:start}
+.mart{display:block;position:relative;width:100%;aspect-ratio:2/3;border-radius:16px;overflow:hidden;
+ box-shadow:0 22px 44px -20px var(--sh-deep)}
+.mart img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.mart.noimg img{display:none}
+.mart .fb{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;gap:5px}
+.mart .fbt{font-family:ui-serif,Georgia,serif;font-size:15px;line-height:1.3;color:rgba(255,255,255,.97);
+ display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.mart .fba{font-size:11px;color:rgba(255,255,255,.72)}
+.modal .k{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:18px 0 5px}
+.modal h3{font-family:ui-serif,Georgia,serif;font-weight:600;font-size:27px;line-height:1.24;margin:12px 0 6px}
+.modal .da{color:var(--paper-dim);font-size:14px;margin-bottom:16px}
+.modal p{font-size:13.5px;line-height:1.65;color:var(--paper-dim);margin:0}
+.modal .lede{font-size:14.5px;line-height:1.62}
+.mfacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px;margin:16px 0 4px}
+.mfact{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);
+ border-radius:12px;padding:10px 13px}
+.mfact b{display:block;font-family:ui-serif,Georgia,serif;font-size:18px;line-height:1.2;color:var(--paper)}
+.mfact span{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.modal a.go{display:inline-block;margin-top:24px;color:#fff;background:var(--accent);text-decoration:none;
+ padding:11px 20px;border-radius:999px;font-size:13px;font-weight:650}
+.close{position:absolute;top:18px;right:20px;background:var(--panel);border:1px solid var(--line);
+ color:var(--muted);font-size:19px;line-height:1;cursor:pointer;width:34px;height:34px;border-radius:50%;
+ display:flex;align-items:center;justify-content:center;transition:.16s;z-index:2}
+.close:hover{color:var(--paper);border-color:var(--accent)}
+@media(max-width:620px){.modal{padding:30px 22px 26px;border-radius:20px;width:96vw;max-height:90vh}
+ .mgrid{grid-template-columns:1fr;gap:22px}.mart{width:150px;margin:0 auto}.modal h3{font-size:22px}}
 .tag{display:inline-block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.28s;z-index:85}
 .scrim.on{opacity:1;pointer-events:auto}
@@ -188,19 +208,15 @@ footer{margin-top:36px;color:var(--muted);font-size:11.5px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body>
 <div class="wrap">
-<h1>The Shelf <em>&mdash; what actually got read</em></h1>
-<p class="sub">Built from Readwise. Nothing is here on the strength of having been saved: every item earned its
-place either because it was highlighted that year, or because it was opened and read at least
-<b id="subpct">5%</b> of the way through &mdash; drag <em>Read at least</em> to raise that bar and watch the
-shelf thin out. Spine thickness is length; the lighter band at the base is how far it actually got;
-a gold dot means highlights were left in it.</p>
+<h1>Fisayo, <em>Readers are Leaders</em></h1>
+<p class="sub">Fisayo's personal library (at least a part of it).</p>
 
 <div class="years" id="years"></div>
 <div class="stats" id="stats"></div>
 
 <div class="controls" id="controls">
-  <button class="chip on" data-view="shelf">Shelf</button>
-  <button class="chip" data-view="covers">Covers</button>
+  <button class="chip" data-view="shelf">Shelf</button>
+  <button class="chip on" data-view="covers">Covers</button>
   <button class="chip" data-view="grid">Cards</button>
   <div class="sep"></div><span id="cats"></span><div class="sep"></div>
   <button class="chip" id="fin">Finished only</button>
@@ -236,16 +252,17 @@ reached the end, not that every minute was watched. Highlight counts are the har
 
 <div class="hov" id="hov"></div>
 <div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer"><button class="close" id="close">&times;</button><div id="dbody"></div></aside>
+<div class="modal" id="drawer" role="dialog" aria-modal="true" aria-label="Item detail">
+  <button class="close" id="close" aria-label="Close">&times;</button><div id="dbody"></div></div>
 
 <script>
 const ALL=__DATA__, YEARS=__YEARS__;
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const HUE={epub:32,pdf:212,article:158,video:280,podcast:8,tweet:196,email:48,note:100};
-const LABEL={epub:'Book',pdf:'Report',article:'Article',video:'Talk',podcast:'Podcast',tweet:'Thread',email:'Newsletter',note:'Note'};
+const LABEL={epub:'Book',pdf:'Report',article:'Article',video:'Video',podcast:'Podcast',tweet:'Thread',email:'Newsletter',note:'Note'};
 const SPINE_H=196;                       // every book the same height, by request
 const state={year:(YEARS.includes(String(new Date().getFullYear()))?String(new Date().getFullYear()):YEARS[0]),
-             view:'shelf',cat:null,fin:false,hl:false,q:'',minProg:__MINPROG__};
+             view:'covers',cat:null,fin:false,hl:false,q:'',minProg:__MINPROG__};
 let DATA=[];
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const hash=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)};
@@ -380,24 +397,37 @@ if(canHover){
   addEventListener('scroll',hideHov,{passive:true});
 }
 
-/* ---------- drawer ---------- */
+/* ---------- detail modal ---------- */
 const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim');
-function open(i){const d=DATA[i],c=accent(d);
+function open(i){const d=DATA[i],c=accent(d),m=mins(d);
+  const facts=[
+    [d.prog==null?'&mdash;':d.prog+'%','read'],
+    [d.hl||'0','highlights'],
+    [m?(m>=60?(m/60).toFixed(1)+'h':m+' min'):'&mdash;','length'],
+    [fmtDate(d.date)||'&mdash;','last touched'],
+  ].map(([a,b])=>`<div class="mfact"><b>${a}</b><span>${b}</span></div>`).join('');
   document.getElementById('dbody').innerHTML=`
-    ${d.img?`<img class="dcov" src="${esc(d.img)}" alt="" onerror="this.remove()">`:''}
-    <span class="tag" style="color:${c};border-color:${c}55;background:${c}18">${LABEL[d.cat]||d.cat}</span>
-    <h3>${esc(d.title)}</h3><div class="da">${esc(d.author||'&mdash;')}</div>
-    ${d.summary?`<p>${esc(d.summary)}</p>`:''}
-    <div class="k">How far you got</div><div class="bar" style="height:6px">
-    <i style="width:${d.prog==null?0:d.prog}%;background:${c}"></i></div>
-    <p style="font-size:12.5px">${d.prog==null?'No progress recorded &mdash; on the shelf purely on the strength of the highlights.':d.prog+'% of the way through'}${d.wc?` &middot; ${lenOf(d)}`:''}</p>
-    <div class="k">Highlights in ${d.y}</div><p style="font-size:13px">${d.hl?d.hl+' passage'+(d.hl>1?'s':'')+' marked':'None'}</p>
-    <div class="k">Last touched</div><p style="font-size:13px">${(d.date||'').slice(0,10)}</p>
-    ${d.first?`<div class="k">First opened / saved</div><p style="font-size:13px">${d.first}</p>`:''}
-    <div class="k">Why it's on the shelf</div><p style="font-size:13px">${
-      d.ev==='both'?`Highlighted <em>and</em> read past the ${state.minProg}% mark.`:
-      d.ev==='highlighted'?'Highlights were left in it that year.':`Read past the ${state.minProg}% mark.`}</p>
-    ${d.url?`<a class="go" href="${d.url}" target="_blank" rel="noopener">Open in Readwise &rarr;</a>`:''}`;
+   <div class="mgrid">
+    <span class="mart${d.img?'':' noimg'}" style="background:linear-gradient(155deg,${col(d,1)},${col(d,3)})">
+      ${d.img?`<img src="${esc(d.img)}" alt="" onerror="this.parentNode.classList.add('noimg')">`:''}
+      <span class="fb"><span class="fbt">${esc(d.title)}</span>
+      <span class="fba">${esc(d.author||LABEL[d.cat]||d.cat)}</span></span>
+    </span>
+    <div>
+      <span class="tag" style="color:${c};border-color:${c}55;background:${c}18">${LABEL[d.cat]||d.cat}</span>
+      <h3>${esc(d.title)}</h3><div class="da">${esc(d.author||'&mdash;')}</div>
+      ${d.summary?`<p class="lede">${esc(d.summary)}</p>`:''}
+      <div class="mfacts">${facts}</div>
+      <div class="k">How far you got</div><div class="bar" style="height:6px">
+      <i style="width:${d.prog==null?0:d.prog}%;background:${c}"></i></div>
+      <p style="font-size:12.5px">${d.prog==null?'No progress recorded &mdash; on the shelf purely on the strength of the highlights.':d.prog+'% of the way through'}${d.wc?` &middot; ${lenOf(d)}`:''}</p>
+      <div class="k">Why it's on the shelf</div><p style="font-size:13px">${
+        d.ev==='both'?`Highlighted <em>and</em> read past the ${state.minProg}% mark.`:
+        d.ev==='highlighted'?'Highlights were left in it that year.':`Read past the ${state.minProg}% mark.`}</p>
+      ${d.first?`<div class="k">First opened / saved</div><p style="font-size:13px">${d.first}</p>`:''}
+      ${d.url?`<a class="go" href="${d.url}" target="_blank" rel="noopener">Open in Readwise &rarr;</a>`:''}
+    </div>
+   </div>`;
   drawer.classList.add('open');scrim.classList.add('on');hideHov();}
 const close=()=>{drawer.classList.remove('open');scrim.classList.remove('on')};
 document.getElementById('close').onclick=close;scrim.onclick=close;
@@ -422,7 +452,6 @@ function paintSlider(){
   const v=+slider.value, min=+slider.min, max=+slider.max;
   slider.style.setProperty('--pct',((v-min)/(max-min)*100)+'%');
   document.getElementById('minprogv').textContent=v+'%';
-  document.getElementById('subpct').textContent=v+'%';
   const kept=ALL.filter(d=>d.y===state.year&&d.hl>0&&(d.prog||0)<v).length;
   document.getElementById('slhint').textContent=
     kept?`+ ${kept} kept by highlights alone`:'';

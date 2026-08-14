@@ -22,7 +22,7 @@ DEFAULT_PROGRESS = 0.05  # where the slider starts on load
 SKIP_CATEGORIES = {"rss"}
 
 CANON = {"articles": "article", "tweets": "tweet", "books": "epub", "podcasts": "podcast"}
-LABEL = {"epub": "Book", "pdf": "Report", "article": "Article", "video": "Talk",
+LABEL = {"epub": "Book", "pdf": "Report", "article": "Article", "video": "Video",
          "podcast": "Podcast", "tweet": "Thread", "email": "Newsletter", "note": "Note"}
 HUE = {"epub": 32, "pdf": 212, "article": 158, "video": 280,
        "podcast": 8, "tweet": 196, "email": 48, "note": 100}
