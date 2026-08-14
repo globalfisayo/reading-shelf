@@ -5,6 +5,10 @@ The bar for making the shelf, per year:
   (a) you highlighted it that year, OR
   (b) you opened it that year AND got at least MIN_PROGRESS of the way through.
 Saving something is not reading it, so saving alone never counts.
+
+MIN_PROGRESS is only the *floor* baked into the page. The page carries a slider
+that re-filters from that floor upwards in the browser, so the bar can be moved
+without rebuilding. Keep the floor low and let the slider do the judging.
 """
 import json, re, pathlib, datetime, collections
 
@@ -13,7 +17,8 @@ CACHE = ROOT / "data" / "cache.json"
 OUT = ROOT / "index.html"
 TEMPLATE = ROOT / "template.html"
 
-MIN_PROGRESS = 0.25
+MIN_PROGRESS = 0.05      # floor: the least-read thing the page can ever show
+DEFAULT_PROGRESS = 0.05  # where the slider starts on load
 SKIP_CATEGORIES = {"rss"}
 
 CANON = {"articles": "article", "tweets": "tweet", "books": "epub", "podcasts": "podcast"}
@@ -59,8 +64,11 @@ def build():
 
     records = []
 
-    def emit(year, title, author, cat, prog, hl, opened, first, wc, url, summary, ev):
+    def emit(year, title, author, cat, prog, hl, opened, first, wc, url, summary, ev, img=""):
         cat = CANON.get(cat, cat) or "article"
+        # Covers are remote images; anything not https would be blocked as mixed
+        # content on Pages, so drop it and let the page draw its own fallback.
+        img = img or ""
         records.append({
             "y": year, "title": (title or "").strip(), "author": clean_author(author),
             "cat": cat, "catLabel": LABEL.get(cat, cat.title()), "hue": HUE.get(cat, 220),
@@ -68,6 +76,7 @@ def build():
             "hl": hl, "date": opened or "", "month": (opened or "")[:7],
             "first": (first or "")[:10], "url": url or "",
             "summary": (summary or "").strip(), "ev": ev,
+            "img": img if img.startswith("https://") else "",
         })
 
     for d in docs.values():
@@ -93,7 +102,8 @@ def build():
                  last if y == oy and opened else (opened if year_of(opened) == y else f"{y}-06-15"),
                  d.get("first_opened_at") or d.get("saved_at") or d.get("created_at"),
                  d.get("word_count"), d.get("url") or d.get("source_url"), d.get("summary"),
-                 "both" if has_hl and has_read else ("highlighted" if has_hl else "progress"))
+                 "both" if has_hl and has_read else ("highlighted" if has_hl else "progress"),
+                 d.get("image_url"))
 
     # highlighted sources with no Reader document of their own
     for b in by_title.values():
@@ -114,7 +124,7 @@ def build():
                 m["prog"] = r["prog"]
             if r["date"] > m["date"]:
                 m["date"], m["month"] = r["date"], r["month"]
-            for f in ("summary", "author", "url"):
+            for f in ("summary", "author", "url", "img"):
                 m[f] = m[f] or r[f]
             if m["ev"] != r["ev"]:
                 m["ev"] = "both"
@@ -127,7 +137,9 @@ def build():
     html = (html.replace("__DATA__", json.dumps(records, ensure_ascii=False))
                 .replace("__YEARS__", json.dumps(years))
                 .replace("__SYNCED__", (cache.get("last_synced") or "")[:16].replace("T", " ") + " UTC")
-                .replace("__TOTALDOCS__", str(len(docs))))
+                .replace("__TOTALDOCS__", str(len(docs)))
+                .replace("__FLOOR__", str(round(MIN_PROGRESS * 100)))
+                .replace("__MINPROG__", str(round(DEFAULT_PROGRESS * 100))))
     OUT.write_text(html)
 
     print(f"Built {OUT} -- {len(records)} shelf entries across {len(years)} years "
