@@ -1,0 +1,8 @@
+# The raw Readwise cache holds your ENTIRE library -- every saved document,
+# including things you never read and may not want public. It is rebuilt on
+# every run and must never be committed to a public repo.
+data/cache.json
+.env
+__pycache__/
+*.pyc
+.DS_Store

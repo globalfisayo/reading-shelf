@@ -1,0 +1,8 @@
+1. Unzip this folder.
+2. Open Claude Code in it:   cd readwise-shelf && claude
+3. Say:                      set this up
+
+That's it. It'll ask you to sign into GitHub and paste your Readwise
+token (get it at https://readwise.io/access_token), then do the rest.
+
+Prefer to do it yourself?   ./setup.sh

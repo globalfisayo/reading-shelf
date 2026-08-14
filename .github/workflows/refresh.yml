@@ -1,0 +1,78 @@
+name: Refresh shelf
+
+on:
+  workflow_dispatch:        # the "Run workflow" button -- refresh whenever you want
+  schedule:
+    - cron: "17 * * * *"    # and hourly on its own (UTC, best-effort)
+  push:
+    branches: [main]        # rebuild when you tweak the template
+
+concurrency:
+  group: shelf
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Keep the raw Readwise cache between runs so each refresh only asks for
+      # what changed. If the cache is missing, refresh.py just does a full sync.
+      - name: Restore Readwise cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/cache.json
+          key: readwise-cache-${{ github.run_id }}
+          restore-keys: readwise-cache-
+
+      - name: Pull from Readwise
+        env:
+          READWISE_TOKEN: ${{ secrets.READWISE_TOKEN }}
+        run: python refresh.py
+
+      - name: Build the shelf
+        run: python build.py
+
+      - name: Save Readwise cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: data/cache.json
+          key: readwise-cache-${{ github.run_id }}
+
+      - name: Commit index.html if it changed
+        run: |
+          git config user.name  "shelf-bot"
+          git config user.email "actions@github.com"
+          git add index.html
+          git diff --staged --quiet || git commit -m "Refresh shelf ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          git push
+
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
