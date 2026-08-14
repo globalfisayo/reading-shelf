@@ -37,7 +37,8 @@ the "Run workflow" button in the Actions tab for refreshing on demand. Nothing e
 
 | What | Where |
 |---|---|
-| The 25%-read bar for making the shelf | `MIN_PROGRESS` in `build.py` |
+| The floor for what gets built in (5%) | `MIN_PROGRESS` in `build.py` |
+| Where the "Read at least" slider starts | `DEFAULT_PROGRESS` in `build.py` |
 | Colours, copy, layout | `template.html` (plain HTML/CSS/JS, no build step) |
 | Which Reader locations sync | `LOCATIONS` in `readwise_client.py` — the RSS `feed` is skipped on purpose |
 | Refresh schedule | the `cron` in `.github/workflows/refresh.yml` |

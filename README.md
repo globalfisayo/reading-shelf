@@ -9,13 +9,22 @@ Most "year in books" pages are really year-in-*intentions* pages — they count 
 only counts evidence. For each year, an item makes the shelf if either:
 
 - you **highlighted** it that year, or
-- you **opened** it that year and got at least **25%** of the way through.
+- you **opened** it that year and got at least **5%** of the way through.
 
-Everything else — the saved-and-never-opened, the opened-and-abandoned-in-a-paragraph — stays off. The result is
+Everything else — the saved-and-never-opened, the closed-on-the-first-screen — stays off. The result is
 usually a much shorter shelf than you expect, and a much more honest one.
 
-Spine height and thickness are the length of the piece, the lighter band at the base is how far you actually got,
-and a gold dot means you left highlights in it. Tabs at the top switch between years.
+That 5% is only where the page *starts*. The **Read at least** slider moves the bar live, from 5% up to 100%,
+and the whole page rescores as you drag: the shelf, the counts, the words and the hours. Push it to 50% and you
+are asking a harder question — what did I really get through? Items kept by their highlights stay at every
+setting, since marking a passage is evidence of reading whatever the scroll position claims.
+
+Three ways to look at it, switchable at the top: **Shelf** stands the books on a board, spine out;
+**Covers** lays them face-out like Apple Books; **Cards** is the plain list. Every book is the same height —
+spine thickness carries the length — the lighter band at the base is how far you actually got, and a gold dot
+means you left highlights in it. Hovering any book pops a card with its title, author, length, progress and
+highlight count; clicking opens the full drawer. Tabs switch between years, and the page follows your system's
+light or dark setting unless you override it with the toggle.
 
 ---
 
