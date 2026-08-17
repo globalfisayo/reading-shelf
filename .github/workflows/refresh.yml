@@ -72,7 +72,21 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      # Pages sometimes answers deployment creation with a 503 -- a GitHub-side
+      # outage, not a bad build. The action itself says to re-run later, so do
+      # exactly that once, unattended, instead of failing the run and mailing
+      # out. If the second attempt also fails the job fails for real, so a
+      # genuine breakage still surfaces.
+      - name: Pages was unavailable, waiting before one retry
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 120
+
+      - id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
